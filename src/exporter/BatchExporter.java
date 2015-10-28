@@ -1,15 +1,46 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package exporter;
 
-/**
- *
- * @author pogoe_000
- */
-public class BatchExporter
+public class BatchExporter implements IBatchExporter
 {
-    
+    @Override
+    public void setTemperature(int kelvin)
+    {
+        
+    }
+
+    @Override
+    public void setMoisture(int level)
+    {
+
+    }
+
+    @Override
+    public void setRedLight(int level)
+    {
+
+    }
+
+    @Override
+    public void setBlueLight(int level)
+    {
+
+    }
+
+    @Override
+    public void addWater(int sec)
+    {
+
+    }
+
+    @Override
+    public void resetError(int errorNum)
+    {
+
+    }
+
+    @Override
+    public void setFanSpeed(int speed)
+    {
+
+    }
 }

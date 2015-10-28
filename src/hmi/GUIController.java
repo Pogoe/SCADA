@@ -1,15 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package hmi;
 
-/**
- *
- * @author pogoe_000
- */
 public class GUIController
 {
+    private static GUIController instance;
+    
+    public static GUIController get()
+    {
+        if(instance == null)
+        {
+            instance = new GUIController();
+        }
+        return instance;
+    }
+    
     
 }
