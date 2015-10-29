@@ -27,9 +27,9 @@ public enum ErrorTypes
     {
         StringBuilder sb = new StringBuilder();
         
-        sb.append("ID:\t\t").append(getId()).append("\n");
-        sb.append("Error name:\t").append(getName()).append("\n");
-        sb.append("Description:\t").append(getDescription());
+        sb.append("ID:\t\t\t").append(getId()).append("\n");
+        sb.append("Error name:\t\t").append(getName()).append("\n");
+        sb.append("Description:\t\t").append(getDescription());
         
         return sb.toString();
     }

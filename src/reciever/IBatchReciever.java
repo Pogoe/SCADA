@@ -6,7 +6,7 @@ import javax.jws.WebService;
 import controller.ErrorTypes;
 
 @WebService
-public interface IReciever
+public interface IBatchReciever
 {
     @WebMethod
     void acceptData(Meassure m);

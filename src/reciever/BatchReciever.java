@@ -5,7 +5,7 @@ import controller.SCADAController;
 import controller.ErrorTypes;
 import crud.*;
 
-public class Reciever implements IReciever
+public class BatchReciever implements IBatchReciever
 {
     private IBatchCRUD crud = CRUD.get();
     private SCADAController sController = new SCADAController();
@@ -42,7 +42,7 @@ public class Reciever implements IReciever
     @Override
     public byte[] getStatus()
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return null;
     }
 
 }

@@ -1,13 +1,40 @@
 package controller;
 
-import hmi.GUIController;
+import java.util.Date;
 
 public class Alarm
 {
-    private GUIController gController = GUIController.get();
+    private boolean trigger;
+    private ErrorTypes error;
+    private Date date;    
     
-    public static void triggerAlarm(ErrorTypes e)
+    public void triggerAlarm(ErrorTypes e)
     {
-        
+        error = e;
+        trigger = true;
+        date = new Date();
+    }
+    
+    public boolean isTriggered()
+    {
+        return trigger;
+    }
+    
+    public void stopAlarm()
+    {
+        trigger = false;
+    }
+    
+    public void getAlarm()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Alarm triggered at ").append(getDate()).append("\n");
+        sb.append("Error:\n");
+        sb.append(error.toString());
+    }
+    
+    public Date getDate()
+    {
+        return date;
     }
 }

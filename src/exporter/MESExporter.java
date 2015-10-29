@@ -1,15 +1,29 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package exporter;
 
-/**
- *
- * @author pogoe_000
- */
-public class MESExporter
-{
-    
+public class MESExporter implements IMESExporter {
+
+    @Override
+    public void maxCapacity(int capacity) 
+    {
+
+    }
+
+    @Override
+    public void currentCapacity(int capacity) 
+    {
+
+    }
+
+    @Override
+    public void removedUnits(int units) 
+    {
+
+    }
+
+    @Override
+    public void harvestedUnits(int units) 
+    {
+
+    }
+
 }
