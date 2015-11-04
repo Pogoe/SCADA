@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="http://localhost:8002/ws/Batch?wsdl" uri="xml-resources/web-service-references/Batch/wsdl/localhost_8002/ws/Batch.wsdl"/>
+    <system systemId="http://localhost:8002/ws/SCADA?wsdl" uri="xml-resources/web-service-references/SCADA/wsdl/localhost_8002/ws/SCADA.wsdl"/>
+</catalog>

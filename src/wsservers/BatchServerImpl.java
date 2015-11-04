@@ -1,11 +1,13 @@
-package reciever;
+package wsservers;
 
 import controller.Meassure;
 import controller.SCADAController;
 import controller.ErrorTypes;
 import crud.*;
+import javax.jws.WebService;
 
-public class BatchReciever implements IBatchReciever
+@WebService(endpointInterface = "wsservers.IBatchServer")
+public class BatchServerImpl implements IBatchServer
 {
     private IBatchCRUD crud = CRUD.get();
     private SCADAController sController = new SCADAController();

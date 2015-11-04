@@ -7,7 +7,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class CRUD implements IBatchCRUD, ISCADAControllerCRUD
+public class CRUD implements IBatchCRUD, ISCADAControllerCRUD, IMESCRUD
 {
     public static CRUD instance;
     private Connection conn;
@@ -31,13 +31,13 @@ public class CRUD implements IBatchCRUD, ISCADAControllerCRUD
         try
         {
             Class.forName("org.postgresql.Driver");
-            String url = "https://localhost:5432/database navn";
-            String user = "Indsæt navn her";
-            String pass = "Indsæt pass her";
+            String url = "https://localhost:5432/Semesterprojekt";
+            String user = "postgres";
+            String pass = "u7e98d22";
             conn = DriverManager.getConnection(url, user, pass);
         } catch (ClassNotFoundException | SQLException ex)
         {
-            
+            System.err.println(ex);
         }
 
     }
@@ -69,9 +69,15 @@ public class CRUD implements IBatchCRUD, ISCADAControllerCRUD
             return i;
         } catch (SQLException ex)
         {
-            
+            System.err.println(ex);
         }
         
         return i;
+    }
+
+    @Override
+    public void storeTask()
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
