@@ -5,7 +5,7 @@ public class BatchClient
     private SCADAServerImplService service;
     private ISCADAServer server;
     
-    public void connect()
+    public BatchClient()
     {
         service = new SCADAServerImplService();
         server = service.getSCADAServerImplPort();
@@ -44,5 +44,10 @@ public class BatchClient
     public void addCO2(int sec)
     {
         server.addCO2(sec);
+    }
+    
+    public void executeOrder(String order)
+    {
+        server.executeOrder(order);
     }
 }

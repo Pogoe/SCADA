@@ -9,5 +9,6 @@ import javax.jws.soap.SOAPBinding.Style;
 @SOAPBinding(style = Style.RPC)
 public interface IMesServer
 {
-    @WebMethod public void storeTask();
+    @WebMethod void storeOrder(String order);
+    @WebMethod void executeOrder(String order);
 }

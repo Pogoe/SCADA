@@ -31,7 +31,7 @@ public class CRUD implements IBatchCRUD, ISCADAControllerCRUD, IMESCRUD
         try
         {
             Class.forName("org.postgresql.Driver");
-            String url = "https://localhost:5432/Semesterprojekt";
+            String url = "jdbc:postgresql://localhost:5432/Semesterprojekt";
             String user = "postgres";
             String pass = "u7e98d22";
             conn = DriverManager.getConnection(url, user, pass);

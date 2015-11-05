@@ -2,6 +2,7 @@ package controller;
 
 import crud.CRUD;
 import crud.ISCADAControllerCRUD;
+import exporter.BatchClient;
 import java.util.Queue;
 
 public class SCADAController
@@ -9,6 +10,7 @@ public class SCADAController
     private int tries = 0;
 
     private ISCADAControllerCRUD crud = CRUD.get();
+    private BatchClient client = new BatchClient();
     private Queue<ErrorTypes> errorCache;
 
     public void handleData(Meassure m)
@@ -45,5 +47,12 @@ public class SCADAController
                 }
             }
         }).start();
+    }
+    
+    public void handleOrder(String order)
+    {
+        System.out.println("\nFinding available BatchController for order: ");
+        System.out.println(order);
+        client.executeOrder(order);
     }
 }
