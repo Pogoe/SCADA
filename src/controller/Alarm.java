@@ -1,5 +1,6 @@
 package controller;
 
+import data.ErrorTypes;
 import java.util.Date;
 
 public class Alarm

@@ -1,21 +1,49 @@
 package controller;
 
-import crud.CRUD;
+import data.Meassure;
+import data.ErrorTypes;
+import crud.HDCRUD;
 import crud.ISCADAControllerCRUD;
-import exporter.BatchClient;
 import java.util.Queue;
 
 public class SCADAController
 {
-    private int tries = 0;
+    private int errorTries = 0;
+    private int meassureTries = 0;
 
-    private ISCADAControllerCRUD crud = CRUD.get();
-    private BatchClient client = new BatchClient();
+    private ISCADAControllerCRUD crud = HDCRUD.get();
     private Queue<ErrorTypes> errorCache;
+    private Queue<Meassure> meassureCache;
 
     public void handleData(Meassure m)
     {
-        
+        new Thread(() ->
+        {
+            int i = crud.storeData(m);
+
+            if (i == 0 && meassureTries < 3)
+            {
+                handleData(m);
+            }
+            else if (i == 0 && meassureTries > 2)
+            {
+                meassureCache.add(m);
+            }
+            else
+            {
+                synchronized (meassureCache)
+                {
+                    if (!meassureCache.isEmpty())
+                    {
+                        meassureCache.parallelStream().forEach((meassure) ->
+                        {
+                            crud.storeData(meassure);
+                        });
+                        
+                    }
+                }
+            }
+        }).start();
     }
 
     public void handleError(ErrorTypes e)
@@ -23,22 +51,22 @@ public class SCADAController
         new Thread(() ->
         {
             int i = crud.storeError(e);
-            
-            if (i == 0 && tries < 3)
+
+            if (i == 0 && errorTries < 3)
             {
                 handleError(e);
             }
-            else if (i == 0 && tries > 2)
+            else if (i == 0 && errorTries > 2)
             {
                 errorCache.add(e);
             }
             else
             {
-                synchronized(errorCache)
+                synchronized (errorCache)
                 {
-                    if(!errorCache.isEmpty())
+                    if (!errorCache.isEmpty())
                     {
-                        errorCache.stream().forEach((error) ->
+                        errorCache.parallelStream().forEach((error) ->
                         {
                             crud.storeError(error);
                         });
@@ -47,12 +75,5 @@ public class SCADAController
                 }
             }
         }).start();
-    }
-    
-    public void handleOrder(String order)
-    {
-        System.out.println("\nFinding available BatchController for order: ");
-        System.out.println(order);
-        client.executeOrder(order);
     }
 }

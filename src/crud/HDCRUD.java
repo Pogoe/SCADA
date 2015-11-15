@@ -1,27 +1,27 @@
 package crud;
 
-import controller.ErrorTypes;
-import controller.Meassure;
+import data.ErrorTypes;
+import data.Meassure;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class CRUD implements IBatchCRUD, ISCADAControllerCRUD, IMESCRUD
+public class HDCRUD implements ISCADAControllerCRUD, IMESCRUD
 {
-    public static CRUD instance;
+    public static HDCRUD instance;
     private Connection conn;
 
-    private CRUD()
+    private HDCRUD()
     {
         connect();
     }
     
-    public static CRUD get()
+    public static HDCRUD get()
     {
         if(instance == null)
         {
-            instance = new CRUD();
+            instance = new HDCRUD();
         }
         return instance;
     }
@@ -43,7 +43,7 @@ public class CRUD implements IBatchCRUD, ISCADAControllerCRUD, IMESCRUD
     }
 
     @Override
-    public void storeData(Meassure m)
+    public int storeData(Meassure m)
     {
         switch(m.getType())
         {
@@ -54,6 +54,8 @@ public class CRUD implements IBatchCRUD, ISCADAControllerCRUD, IMESCRUD
             case WATER_LEVEL:
                 break;
         }
+        
+        return 0;
     }
 
     @Override
@@ -76,7 +78,7 @@ public class CRUD implements IBatchCRUD, ISCADAControllerCRUD, IMESCRUD
     }
 
     @Override
-    public void storeTask()
+    public void storeOrder()
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

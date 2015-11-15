@@ -1,8 +1,10 @@
 package crud;
 
-import controller.ErrorTypes;
+import data.ErrorTypes;
+import data.Meassure;
 
 public interface ISCADAControllerCRUD
 {
     int storeError(ErrorTypes e);
+    int storeData(Meassure m);
 }
