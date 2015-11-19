@@ -1,11 +1,16 @@
 package crud;
 
-import data.ErrorTypes;
+import data.BatchError;
 import data.Meassure;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class HDCRUD implements ISCADAControllerCRUD, IMESCRUD
 {
@@ -59,7 +64,7 @@ public class HDCRUD implements ISCADAControllerCRUD, IMESCRUD
     }
 
     @Override
-    public int storeError(ErrorTypes e)
+    public int storeError(BatchError e)
     {
         int i = 0;
         try
@@ -81,5 +86,34 @@ public class HDCRUD implements ISCADAControllerCRUD, IMESCRUD
     public void storeOrder()
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<BatchError> getDailyErrors(Date from, Date to)
+    {
+        List<BatchError> list = new ArrayList<>();
+        try
+        {
+            Timestamp f = new Timestamp(from.getTime());
+            Timestamp t = new Timestamp(to.getTime());
+            String query = "SELECT * FROM Error WHERE created > " + f + " AND created < + " + t + " ORDER BY created";
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            
+            while(rs.next())
+            {
+                list.add(new BatchError(rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4),
+                        rs.getDate(5),
+                        rs.getDate(6)));
+            }
+        } catch (SQLException ex)
+        {
+            
+        }
+        
+        return list;
     }
 }

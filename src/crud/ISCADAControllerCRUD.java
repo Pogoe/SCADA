@@ -1,10 +1,13 @@
 package crud;
 
-import data.ErrorTypes;
+import data.BatchError;
 import data.Meassure;
+import java.util.Date;
+import java.util.List;
 
 public interface ISCADAControllerCRUD
 {
-    int storeError(ErrorTypes e);
+    int storeError(BatchError e);
     int storeData(Meassure m);
+    List<BatchError> getDailyErrors(Date from, Date to);
 }

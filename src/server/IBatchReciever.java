@@ -1,6 +1,6 @@
 package server;
 
-import controller.IBatchExporter;
+import batchserver.IBatchExporter;
 import data.BatchError;
 import data.Meassure;
 import java.rmi.Remote;

@@ -1,60 +1,96 @@
 package server;
 
-import controller.IBatchExporter;
+import Controller.IMesReciever;
+import batchserver.IBatchExporter;
 import data.BatchError;
 import data.Meassure;
 import controller.SCADAController;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import order.Order;
 
 public class RecieverImpl extends UnicastRemoteObject implements IMesReciever, IBatchReciever
 {
-    private SCADAController controller;
-    private List<IBatchExporter> clients = new ArrayList<>();
-    
+
+    private SCADAController controller = new SCADAController();
+
     public RecieverImpl() throws RemoteException
     {
-        
+
     }
 
     @Override
     public boolean queueOrder(Order o) throws RemoteException
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        AtomicBoolean b = new AtomicBoolean();
+        new Thread(() ->
+        {
+            b.set(controller.startOrder(o));
+        }).start();
+
+        return b.get();
     }
 
     @Override
-    public List<BatchError> getDailyErrors(Date date) throws RemoteException
+    public List<BatchError> getDailyErrors(Date from, Date to) throws RemoteException
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return controller.getCrud().getDailyErrors(from, to);
     }
 
     @Override
-    public int getMaxCapacity()
+    public int getMaxCapacity() throws RemoteException
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return controller.clients.get(0).getCapacity();
     }
 
     @Override
-    public int getCurrentCapacity()
+    public Map<String, Integer> getCurrentCapacity(Order o)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Map<String, Integer> map = new ConcurrentHashMap<>();
+        controller.clients.parallelStream().forEach((c) ->
+        {
+            try
+            {
+                if (c.getCurrentOrder() == o.getRecipe().toHashMap())
+                {
+                    map.put(c.getName(), c.getCurrentCapacity());
+                }
+            } catch (RemoteException ex)
+            {
+                Logger.getLogger(RecieverImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+
+        return map;
     }
 
     @Override
-    public int getRemovedUnits()
+    public int getRemovedUnits(Order o)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public int getHarvestedUnits()
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        AtomicInteger removed = new AtomicInteger();
+        controller.clients.parallelStream().forEach((c) ->
+        {
+            try
+            {
+                if (c.getCurrentOrder() == o.getRecipe().toHashMap())                
+                {
+                    removed.set(removed.get() + c.getRemovedUnits());
+                }
+            } catch (RemoteException ex)
+            {
+                System.err.println("aæsdofihasid");
+            }
+        });
+        
+        return removed.get();
     }
 
     @Override
@@ -84,13 +120,12 @@ public class RecieverImpl extends UnicastRemoteObject implements IMesReciever, I
     @Override
     public void sendError(BatchError error)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        controller.handleError(error);
     }
 
     @Override
     public void connectToServer(IBatchExporter bc)
     {
-        clients.add(bc);
+        controller.clients.add(bc);
     }
-    
 }
