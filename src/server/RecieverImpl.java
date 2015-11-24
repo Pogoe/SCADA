@@ -13,8 +13,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import order.Order;
 
 public class RecieverImpl extends UnicastRemoteObject implements IMesReciever, IBatchReciever
@@ -52,7 +50,7 @@ public class RecieverImpl extends UnicastRemoteObject implements IMesReciever, I
     }
 
     @Override
-    public Map<String, Integer> getCurrentCapacity(Order o)
+    public Map<String, Integer> getCurrentCapacity(Order o) throws RemoteException
     {
         Map<String, Integer> map = new ConcurrentHashMap<>();
         controller.clients.parallelStream().forEach((c) ->
@@ -65,7 +63,7 @@ public class RecieverImpl extends UnicastRemoteObject implements IMesReciever, I
                 }
             } catch (RemoteException ex)
             {
-                Logger.getLogger(RecieverImpl.class.getName()).log(Level.SEVERE, null, ex);
+                System.err.println("Still need to find a way to do this!");
             }
         });
 
@@ -73,7 +71,7 @@ public class RecieverImpl extends UnicastRemoteObject implements IMesReciever, I
     }
 
     @Override
-    public int getRemovedUnits(Order o)
+    public int getRemovedUnits(Order o) throws RemoteException
     {
         AtomicInteger removed = new AtomicInteger();
         controller.clients.parallelStream().forEach((c) ->
@@ -94,37 +92,41 @@ public class RecieverImpl extends UnicastRemoteObject implements IMesReciever, I
     }
 
     @Override
-    public void sendTemp1(Meassure temp)
+    public void sendTemp1(Meassure temp) throws RemoteException
     {
+        //Send to GUI
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void sendTemp2(Meassure temp)
+    public void sendTemp2(Meassure temp) throws RemoteException
     {
+        //Send to GUI
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void sendMoist(Meassure moist)
+    public void sendMoist(Meassure moist) throws RemoteException
     {
+        //Send to GUI
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void sendWaterLevel(Meassure level)
+    public void sendWaterLevel(Meassure level) throws RemoteException
     {
+        //Send to GUI
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void sendError(BatchError error)
+    public void sendError(BatchError error) throws RemoteException
     {
         controller.handleError(error);
     }
 
     @Override
-    public void connectToServer(IBatchExporter bc)
+    public void connectToServer(IBatchExporter bc) throws RemoteException
     {
         controller.clients.add(bc);
     }

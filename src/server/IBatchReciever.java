@@ -13,5 +13,5 @@ public interface IBatchReciever extends Remote
     void sendMoist(Meassure moist) throws RemoteException;
     void sendWaterLevel(Meassure level) throws RemoteException;
     void sendError(BatchError error) throws RemoteException;
-    void connectToServer(IBatchExporter bc);
+    void connectToServer(IBatchExporter bc) throws RemoteException;
 }
