@@ -10,18 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
-import java.util.HashSet;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import order.Order;
 
 public class SCADAController
 {
-
     private int errorTries = 0;
     private int meassureTries = 0;
     private Order queuedOrder;
 
-    public static List<IBatchExporter> clients = new ArrayList<>();
+    public static List<IBatchExporter> clients = new CopyOnWriteArrayList<>();
     private ISCADAControllerCRUD crud = HDCRUD.get();
     private Queue<BatchError> errorCache;
     private Queue<Meassure> meassureCache;
@@ -35,10 +36,12 @@ public class SCADAController
             if (i == 0 && meassureTries < 3)
             {
                 handleData(m);
-            } else if (i == 0 && meassureTries > 2)
+            }
+            else if (i == 0 && meassureTries > 2)
             {
                 meassureCache.add(m);
-            } else
+            }
+            else
             {
                 synchronized (meassureCache)
                 {
@@ -64,10 +67,12 @@ public class SCADAController
             if (i == 0 && errorTries < 3)
             {
                 handleError(e);
-            } else if (i == 0 && errorTries > 2)
+            }
+            else if (i == 0 && errorTries > 2)
             {
                 errorCache.add(e);
-            } else
+            }
+            else
             {
                 synchronized (errorCache)
                 {
@@ -92,54 +97,59 @@ public class SCADAController
      */
     public boolean startOrder(Order o)
     {
-        Set<IBatchExporter> readyClients = new HashSet<>();
-        clients.parallelStream().forEach((c) ->
+        AtomicBoolean b = new AtomicBoolean();
+
+        new Thread(() ->
         {
-            try
+            Set<IBatchExporter> readyClients = new CopyOnWriteArraySet<>();
+            clients.parallelStream().forEach((c) ->
             {
-                if (c.isExecuting())
+                try
                 {
-                    synchronized (readyClients)
+                    if (c.isExecuting())
                     {
                         readyClients.add(c);
                     }
+                } catch (RemoteException ex)
+                {
+                    System.out.println("I dont know what to do with this!!");
                 }
-            } catch (RemoteException ex)
-            {
-                System.out.println("I dont know what to do with this!!");
-            }
-        });
+            });
 
-        if (readyClients.isEmpty())
-        {
-            if (queuedOrder == null)
+            if (!readyClients.isEmpty())
             {
-                queuedOrder = o;
-                return true;
+                if (queuedOrder == null)
+                {
+                    queuedOrder = o;
+                    b.set(true);
+                }
+                else
+                {
+                    b.set(false);
+                }
             }
             else
             {
-                return false;
-            }
-        } else
-        {
-            AtomicInteger size = new AtomicInteger(o.getQuantity());
-            while (size.get() > 0)
-            {
-                readyClients.parallelStream().forEach((c) ->
+                AtomicInteger size = new AtomicInteger(o.getQuantity());
+                while (size.get() > 0)
                 {
-                    try
+                    readyClients.parallelStream().forEach((c) ->
                     {
-                        c.startOrder(o.getRecipe().toHashMap());
-                        size.set(size.get() - c.getCapacity());
-                    } catch (RemoteException ex)
-                    {
-                        System.err.println("I dont know what to do with this!");
-                    }
-                });
+                        try
+                        {
+                            c.startOrder(o.getRecipe().toHashMap());
+                            size.set(size.get() - c.getCapacity());
+                        } catch (RemoteException ex)
+                        {
+                            System.err.println("I dont know what to do with this!");
+                        }
+                    });
+                }
+                b.set(true);
             }
-            return true;
-        }
+        }).start();
+
+        return b.get();
     }
 
     public ISCADAControllerCRUD getCrud()

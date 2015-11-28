@@ -2,6 +2,7 @@ package server;
 
 import Controller.IMesReciever;
 import batchserver.IBatchExporter;
+import controller.IBatchReciever;
 import data.BatchError;
 import data.Meassure;
 import controller.SCADAController;
@@ -46,14 +47,14 @@ public class RecieverImpl extends UnicastRemoteObject implements IMesReciever, I
     @Override
     public int getMaxCapacity() throws RemoteException
     {
-        return controller.clients.get(0).getCapacity();
+        return SCADAController.clients.get(0).getCapacity();
     }
 
     @Override
     public Map<String, Integer> getCurrentCapacity(Order o) throws RemoteException
     {
         Map<String, Integer> map = new ConcurrentHashMap<>();
-        controller.clients.parallelStream().forEach((c) ->
+        SCADAController.clients.parallelStream().forEach((c) ->
         {
             try
             {
@@ -74,7 +75,7 @@ public class RecieverImpl extends UnicastRemoteObject implements IMesReciever, I
     public int getRemovedUnits(Order o) throws RemoteException
     {
         AtomicInteger removed = new AtomicInteger();
-        controller.clients.parallelStream().forEach((c) ->
+        SCADAController.clients.parallelStream().forEach((c) ->
         {
             try
             {

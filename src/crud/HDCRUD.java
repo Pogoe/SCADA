@@ -52,7 +52,9 @@ public class HDCRUD implements ISCADAControllerCRUD, IMESCRUD
     {
         switch(m.getType())
         {
-            case TEMPERATURE:
+            case TEMPERATURE_INSIDE:
+                break;
+            case TEMPERATURE_OUTSIDE:
                 break;
             case MOISTURE:
                 break;
