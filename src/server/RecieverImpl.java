@@ -96,7 +96,7 @@ public class RecieverImpl extends UnicastRemoteObject implements IMesReciever, I
     public void sendTemp1(Meassure temp) throws RemoteException
     {
         //Send to GUI
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        controller.setTemp(temp.getValue());
     }
 
     @Override
@@ -110,14 +110,14 @@ public class RecieverImpl extends UnicastRemoteObject implements IMesReciever, I
     public void sendMoist(Meassure moist) throws RemoteException
     {
         //Send to GUI
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        controller.setMoist(moist.getValue());
     }
 
     @Override
     public void sendWaterLevel(Meassure level) throws RemoteException
     {
         //Send to GUI
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        controller.setWaterLevel(level.getValue());
     }
 
     @Override
@@ -129,6 +129,6 @@ public class RecieverImpl extends UnicastRemoteObject implements IMesReciever, I
     @Override
     public void connectToServer(IBatchExporter bc) throws RemoteException
     {
-        controller.clients.add(bc);
+        SCADAController.clients.add(bc);
     }
 }

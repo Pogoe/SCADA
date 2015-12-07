@@ -6,8 +6,8 @@ import crud.HDCRUD;
 import crud.ISCADAControllerCRUD;
 import data.BatchError;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -16,11 +16,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import order.Order;
 
-public class SCADAController
+public class SCADAController extends Observable
 {
     private int errorTries = 0;
     private int meassureTries = 0;
     private Order queuedOrder;
+
+    private double temp;
+    private double moist;
+    private int redLight;
+    private int blueLight;
+    private double waterLevel;
+    private int fanSpeed;
 
     public static List<IBatchExporter> clients = new CopyOnWriteArrayList<>();
     private ISCADAControllerCRUD crud = HDCRUD.get();
@@ -156,4 +163,77 @@ public class SCADAController
     {
         return crud;
     }
+
+    public double getTemp()
+    {
+        return temp;
+    }
+
+    public void setTemp(double temp)
+    {
+        this.temp = temp;
+        setChanged();
+        notifyObservers();
+    }
+
+    public double getMoist()
+    {
+        return moist;
+    }
+
+    public void setMoist(double moist)
+    {
+        this.moist = moist;
+        setChanged();
+        notifyObservers();
+    }
+
+    public int getRedLight()
+    {
+        return redLight;
+    }
+
+    public void setRedLight(int redLight)
+    {
+        this.redLight = redLight;
+        setChanged();
+        notifyObservers();
+    }
+
+    public int getBlueLight()
+    {
+        return blueLight;
+    }
+
+    public void setBlueLight(int blueLight)
+    {
+        this.blueLight = blueLight;
+        setChanged();
+        notifyObservers();
+    }
+
+    public double getWaterLevel()
+    {
+        return waterLevel;
+    }
+
+    public void setWaterLevel(double waterLevel)
+    {
+        this.waterLevel = waterLevel;
+        setChanged();
+        notifyObservers();
+    }
+
+    public int getFanSpeed()
+    {
+        return fanSpeed;
+    }
+
+    public void setFanSpeed(int fanSpeed)
+    {
+        this.fanSpeed = fanSpeed;
+        setChanged();
+        notifyObservers();
+    }
+
 }

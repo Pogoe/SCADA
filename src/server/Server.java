@@ -10,7 +10,7 @@ public class Server
     public static final int PORT = 7000;
     public static final String NAME = "SCADA";
     
-    public static void main(String[] args)
+    public static void connect()
     {
         try
         {
